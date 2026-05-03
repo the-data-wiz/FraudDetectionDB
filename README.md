@@ -1,5 +1,3 @@
-# FraudDetectionDB
-
 # 🛡️ Fraud Detection System
 
 A fully implemented database project for **Introduction to Database Systems** (BFT-4C).  
@@ -37,6 +35,85 @@ The Fraud Detection System monitors financial transactions in real time and auto
 | `FraudRules` | Configurable thresholds and detection logic |
 | `Blacklist` | Banned IPs, devices, and merchants |
 | `AuditLog` | System-level change tracking via triggers |
+
+---
+
+## 📊 Entity Relationship Diagram
+
+```mermaid
+erDiagram
+  Customers {
+    int CustomerID PK
+    varchar FullName
+    varchar Email
+    varchar NationalID
+    date DateOfBirth
+    varchar Address
+    datetime CreatedAt
+    bit IsActive
+  }
+  Accounts {
+    int AccountID PK
+    int CustomerID FK
+    varchar AccountNumber
+    varchar AccountType
+    decimal Balance
+    varchar Status
+  }
+  Transactions {
+    int TransactionID PK
+    int AccountID FK
+    varchar TransactionType
+    decimal Amount
+    datetime Timestamp
+    varchar MerchantName
+    varchar Location
+    varchar IPAddress
+    varchar DeviceID
+    varchar Status
+  }
+  FraudAlerts {
+    int AlertID PK
+    int TransactionID FK
+    int RuleID FK
+    varchar AlertType
+    varchar Severity
+    bit IsResolved
+    datetime CreatedAt
+  }
+  FraudRules {
+    int RuleID PK
+    varchar RuleName
+    varchar Description
+    decimal Threshold
+    bit IsActive
+  }
+  Blacklist {
+    int BlacklistID PK
+    varchar EntityType
+    varchar EntityValue
+    varchar Reason
+    datetime AddedAt
+    bit IsActive
+  }
+  AuditLog {
+    int LogID PK
+    varchar TableName
+    varchar OperationType
+    int RecordID
+    varchar OldValue
+    varchar NewValue
+    datetime ChangedAt
+  }
+  Customers ||--o{ Accounts : "has"
+  Accounts ||--o{ Transactions : "contains"
+  Transactions ||--o{ FraudAlerts : "triggers"
+  FraudRules ||--o{ FraudAlerts : "defines"
+  Transactions ||--o{ AuditLog : "logged in"
+  Accounts ||--o{ AuditLog : "logged in"
+```
+
+> 💡 **Tip:** If the diagram doesn't render above (e.g. on a local markdown viewer), open `fraud_detection_erd.html` in your browser for a fully styled interactive version.
 
 ---
 
@@ -104,6 +181,7 @@ Open [http://localhost:8501](http://localhost:8501)
 |------|-------------|
 | `fraud_detection.sql` | Complete SQL script (tables, data, procedures, triggers, views) |
 | `fraud_dashboard.py` | Streamlit web dashboard |
+| `fraud_detection_erd.html` | Standalone interactive ERD diagram |
 | `requirements.txt` | Python dependencies |
 
 ---
